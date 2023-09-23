@@ -681,6 +681,7 @@ public:
 	irr::gui::IGUIButton* btnCategoryOK;
 	irr::gui::IGUIButton* btnMarksFilter;
 	irr::gui::IGUIWindow* wLinkMarks;
+	irr::gui::IGUIButton* btnFavourites;
 	irr::gui::IGUIButton* btnMark[8];
 	irr::gui::IGUIButton* btnMarksOK;
 	irr::gui::IGUICheckBox* chkAnime;

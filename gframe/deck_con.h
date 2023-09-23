@@ -83,6 +83,7 @@ private:
 	void pop_extra(int seq);
 	void pop_side(int seq);
 	bool check_limit(const CardDataC* pointer);
+	bool filter_favourites = false;
 #define DECLARE_WITH_CACHE(type, name) type name;\
 										type prev_##name;
 	DECLARE_WITH_CACHE(uint64_t, filter_effect)

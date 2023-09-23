@@ -734,6 +734,7 @@ void Game::Initialize() {
 		defaultStrings.emplace_back(chkCategory[i], 1100 + i);
 	}
 	btnMarksFilter = AlignElementWithParent(env->addButton(Scale(155, 96, 240, 118), wFilter, BUTTON_MARKS_FILTER, gDataManager->GetSysString(1374).data()));
+	btnFavourites = AlignElementWithParent(env->addButton(Scale(100, 96, 154, 118), wFilter, BUTTON_FAVOURITES_FILTER, L"Favourties"));
 	defaultStrings.emplace_back(btnMarksFilter, 1374);
 	wLinkMarks = env->addWindow(Scale(700, 30, 820, 150), false, L"");
 	wLinkMarks->getCloseButton()->setVisible(false);

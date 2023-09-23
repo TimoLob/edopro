@@ -88,6 +88,7 @@ void DeckBuilder::Initialize(bool refresh) {
 	mainGame->btnHandTest->setVisible(true);
 	mainGame->btnHandTestSettings->setVisible(true);
 	mainGame->btnYdkeManage->setVisible(true);
+	mainGame->btnFavourites->setVisible(true);
 	filterList = &gdeckManager->_lfList[mainGame->cbDBLFList->getSelected()];
 	if(refresh) {
 		ClearSearch();
@@ -479,6 +480,11 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				mainGame->HideElement(mainGame->wLinkMarks);
 				StartFilter(true);
 				break;
+			}
+			case BUTTON_FAVOURITES_FILTER: {
+				// FAVROUTIES
+				filter_favourites = !filter_favourites;
+				StartFilter(true);
 			}
 			}
 			break;
@@ -1070,9 +1076,29 @@ void DeckBuilder::StartFilter(bool force_refresh) {
 	FilterCards(force_refresh);
 	GetHoveredCard();
 }
+
+bool in_favourites(uint32_t code, Deck fav) {
+
+	for (auto& card : fav.main) {
+		if (card->code == code)
+			return true;
+	}
+	for (auto& card : fav.extra) {
+		if (card->code == code)
+			return true;
+	}
+	for (auto& card : fav.side) {
+		if (card->code == code)
+			return true;
+	}
+	return false;
+}
+
 void DeckBuilder::FilterCards(bool force_refresh) {
 	results.clear();
 	std::vector<std::wstring> searchterms;
+	Deck favourites;
+	DeckManager::LoadDeckFromFile(Utils::ToPathString("deck/fav.ydk"), favourites, false);
 	if(wcslen(mainGame->ebCardName->getText())) {
 		searchterms = Utils::TokenizeString<std::wstring>(Utils::ToUpperNoAccents<std::wstring>(mainGame->ebCardName->getText()), L"||");
 	} else
@@ -1126,7 +1152,15 @@ void DeckBuilder::FilterCards(bool force_refresh) {
 		std::vector<const CardDataC*> result;
 		for(auto& card : gDataManager->cards) {
 			if(CheckCard(&card.second, static_cast<SEARCH_MODIFIER>(modif), tokens, set_code))
-				result.push_back(&card.second._data);
+				if (filter_favourites) {
+					if (in_favourites(card.second._data.code, favourites)) {
+						result.push_back(&card.second._data);
+					}
+				}
+				else {
+					results.push_back(&card.second._data);
+				}
+				
 		}
 		if(result.size())
 			searched_terms[term] = result;
@@ -1134,6 +1168,7 @@ void DeckBuilder::FilterCards(bool force_refresh) {
 	for(const auto& res : searched_terms) {
 		results.insert(results.end(), res.second.begin(), res.second.end());
 	}
+
 	SortList();
 	auto ip = std::unique(results.begin(), results.end());
 	results.resize(std::distance(results.begin(), ip));
@@ -1326,6 +1361,7 @@ void DeckBuilder::ClearFilter() {
 	mainGame->ebDefense->setText(L"");
 	mainGame->ebStar->setText(L"");
 	mainGame->ebScale->setText(L"");
+	filter_favourites = false;
 	filter_effect = 0;
 	for(int i = 0; i < 32; ++i)
 		mainGame->chkCategory[i]->setChecked(false);
