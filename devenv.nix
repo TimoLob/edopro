@@ -22,7 +22,11 @@
 		pkgs.fmt
 		pkgs.glfw
 		pkgs.glm
-		pkgs.irrlicht
+		pkgs.p7zip
+		pkgs.openal
+		pkgs.flac
+		pkgs.libvorbis
+		pkgs.upx
 
 	];
 
